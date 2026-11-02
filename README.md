@@ -1,70 +1,140 @@
-# Getting Started with Create React App
+# MFlix Movie Viewer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack React application for viewing and searching movies from MongoDB's `sample_mflix` dataset.
 
-## Available Scripts
+The Express backend connects to MongoDB Atlas and exposes a movie-search API. The React frontend uses Axios and Bootstrap to display results.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Search movies by title
+- Display movie posters, titles, release years, and genres
+- Responsive Bootstrap card layout
+- MongoDB Atlas integration
+- Configurable frontend and backend URLs
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Tech Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- React
+- React Bootstrap and Bootstrap
+- Axios
+- Node.js and Express
+- MongoDB and MongoDB Atlas
 
-### `npm test`
+## Local Setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Install dependencies
 
-### `npm run build`
+```powershell
+cd C:\path\to\mflix-viewer
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Configure environment variables
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Create `.env` from `.env.example`:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```powershell
+Copy-Item .env.example .env
+```
 
-### `npm run eject`
+Update `.env` with your MongoDB Atlas connection string:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```env
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-host>/sample_mflix?retryWrites=true&w=majority
+PORT=5000
+FRONTEND_URL=http://localhost:3000
+REACT_APP_API_URL=http://localhost:5000
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The `.env` file is ignored by Git and must not be committed.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 3. Start the backend
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```powershell
+npm run start:server
+```
 
-## Learn More
+The API runs at `http://localhost:5000`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 4. Start the frontend
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+In a separate terminal:
 
-### Code Splitting
+```powershell
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The React app runs at `http://localhost:3000`.
 
-### Analyzing the Bundle Size
+## API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Get movies
 
-### Making a Progressive Web App
+```text
+GET /api/movies
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Optional query parameter:
 
-### Advanced Configuration
+```text
+GET /api/movies?search=<title>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+The endpoint returns up to 20 matching movie documents from the MongoDB `movies` collection.
 
-### Deployment
+## Render Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+The frontend and backend are deployed as separate Render services.
 
-### `npm run build` fails to minify
+- Frontend: https://mflix-viewer.onrender.com
+- Backend: https://mflix-viewer-api.onrender.com
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Backend environment variables
+
+Set these on the Render Web Service:
+
+```env
+MONGODB_URI=<your-atlas-uri>/sample_mflix?retryWrites=true&w=majority
+PORT=10000
+FRONTEND_URL=https://mflix-viewer.onrender.com
+```
+
+Use the start command:
+
+```text
+node server.js
+```
+
+### Frontend environment variable
+
+Set this when building the Render Static Site:
+
+```env
+REACT_APP_API_URL=https://mflix-viewer-api.onrender.com
+```
+
+Build command:
+
+```text
+npm install
+npm run build
+```
+
+Publish directory:
+
+```text
+build
+```
+
+In MongoDB Atlas, allow the backend to connect through Network Access by adding `0.0.0.0/0` or a narrowly scoped outbound IP allowlist.
+
+## Scripts
+
+- `npm start` - Start the React development server
+- `npm run start:server` - Start the Express server
+- `npm run build` - Create a production React build
+- `npm test` - Run frontend tests
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
